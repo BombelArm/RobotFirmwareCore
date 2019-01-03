@@ -12,9 +12,10 @@
 #include <bomblos/MotorController.hpp>
 #include <ros.h>
 #include <std_msgs/UInt64.h>
+#include <bombel_msgs/BombelSpeed.h>
 #include <std_msgs/UInt32.h>
 
-#define CMD_SUB_NAME "bombel/command"
+#define SPEED_SUB_NAME "bombel/speed"
 #define STATUS_PUB_NAME "bombel/status"
 #define MSG_PERIOD 10 //in 10ms == 100Hz
 
@@ -27,10 +28,10 @@ class Communicator
 		ros::NodeHandle 	nh;
 		std_msgs::UInt64  	status_msg;
 		ros::Publisher		status_pub;
-		ros::Subscriber		<std_msgs::UInt64, Communicator> 	cmd_sub;
+		ros::Subscriber		<bombel_msgs::BombelSpeed, Communicator> 	speed_sub;
 		MotorController 	*motor_controller;
 
-		void cmd_callback(const std_msgs::UInt64& cmd_msg);
+		void speed_msg_callback(const bombel_msgs::BombelSpeed& speed_msg);
 
 		//SYNC
 		Counter<Communicator> counter; //counts in ms (TIM3)
