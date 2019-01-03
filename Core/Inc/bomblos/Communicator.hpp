@@ -9,6 +9,7 @@
 #define BOMBLOS_COMMUNICATOR_HPP_
 
 #include <bomblos/Counter.hpp>
+#include <bomblos/MotorController.hpp>
 #include <ros.h>
 #include <std_msgs/UInt64.h>
 #include <std_msgs/UInt32.h>
@@ -26,8 +27,8 @@ class Communicator
 		ros::NodeHandle 	nh;
 		std_msgs::UInt64  	status_msg;
 		ros::Publisher		status_pub;
-		ros::Subscriber<std_msgs::UInt64, Communicator> 	cmd_sub;
-
+		ros::Subscriber		<std_msgs::UInt64, Communicator> 	cmd_sub;
+		MotorController 	*motor_controller;
 
 		void cmd_callback(const std_msgs::UInt64& cmd_msg);
 
@@ -37,7 +38,7 @@ class Communicator
 
 
 	public:
-		Communicator();
+		Communicator(MotorController *m1);
 		ros::NodeHandle& 	getNodeHandle();
 		Counter<Communicator>&	getCounter();
 };

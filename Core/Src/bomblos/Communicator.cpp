@@ -1,6 +1,7 @@
 #include <bomblos/Communicator.hpp>
+#include <bomblos/MotorController.hpp>
 
-Communicator::Communicator():
+Communicator::Communicator(MotorController *m1):
 	counter(MSG_PERIOD ,&Communicator::desync_callback, this),
 	status_pub(STATUS_PUB_NAME, &status_msg),
 	cmd_sub(CMD_SUB_NAME, &Communicator::cmd_callback, this)
@@ -12,11 +13,11 @@ Communicator::Communicator():
 
 	//subscribers
 	nh.subscribe(cmd_sub);
+	motor_controller = m1;
 }
 
 void Communicator::cmd_callback(const std_msgs::UInt64& cmd_msg){
-	counter.resetState();
-
+	motor_controller->setSpeed(0,cmd_msg.data);
 }
 
 ros::NodeHandle& Communicator::getNodeHandle(){
