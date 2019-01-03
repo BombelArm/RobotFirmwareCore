@@ -10,6 +10,7 @@
 #include "motors_param.h"
 #include <ros.h>
 #include <std_msgs/UInt64.h>
+#include <bomblos/MotorController.hpp>
 
 
 extern TIM_HandleTypeDef htim2;
@@ -22,7 +23,7 @@ ros::Publisher chatter("chatter", &v_msg);
 MotorParameterData_t *MotorParameterDataGlobal;
 StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 
-
+MotorController *m1;
 void init_motors();
 void set_speed(int,int);
 
@@ -41,11 +42,14 @@ ros::Subscriber<std_msgs::UInt64> sub("sub1",msg_received_callback);
 
 void setup(void)
 {
-	init_motors();
+//	init_motors();
 	nh.initNode();
 	nh.advertise(chatter);
 	nh.subscribe(sub);
-	set_speed(0,100);
+//	set_speed(0,100);
+	m1 = new MotorController();
+	m1->setSpeed(0,100);
+	m1->setSpeed(1,100);
 }
 
 void loop(void)

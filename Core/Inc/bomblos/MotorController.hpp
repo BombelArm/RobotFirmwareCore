@@ -13,7 +13,7 @@
 #include "L6470.h"
 #include "xnucleoihm02a1.h"
 
-#define MOTOR_SUPPLY_VOLTAGE 			12.0 				//!< motor supply voltage in V
+#define MOTOR_SUPPLY_VOLTAGE 			12.0				//!< motor supply voltage in V
 #define MIN_STEPS_PER_REVOLUTION 		400					//!< min number of steps per revolution for the motor
 #define MAX_MOTOR_PHASE_VOLTAGE_AMPR 	0.1					//!< max motor phase voltage in A
 #define MAX_MOTOR_PHASE_VOLTAGE_VOLT 	3.06				//!< max motor phase voltage in V
@@ -40,16 +40,19 @@
 
 class MotorController{
 private:
-	MotorParameterData_t *MotorParameterInitData;
+	MotorParameterData_t MotorParameterInitData[EXPBRD_MOUNTED_NR][L6470DAISYCHAINSIZE];
+
 	void initMotors();
 public:
 	MotorController();
+
 	void setSpeed(uint8_t motor, uint32_t speed);
 	void setPosition(uint8_t motor, uint32_t position);
-	uint32_t  getPosition(uint8_t motor);
-	sL6470_StatusRegister_t getStatus(uint8_t motor);
 	void softStop(uint8_t motor);
 	void hardStop(uint8_t motor);
+
+	uint32_t  getPosition(uint8_t motor);
+	sL6470_StatusRegister_t getStatus(uint8_t motor);
 };
 
 

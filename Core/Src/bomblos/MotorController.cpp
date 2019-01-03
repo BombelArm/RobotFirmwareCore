@@ -6,10 +6,10 @@
  */
 
 #include "bomblos/MotorController.hpp"
+#include "motors_param.h"
 
-MotorController::MotorController()
-{
-	MotorParameterData_t params[EXPBRD_MOUNTED_NR][L6470DAISYCHAINSIZE] = {
+MotorController::MotorController():
+	MotorParameterInitData	{
 	  {
 	    {
 	    		MOTOR_SUPPLY_VOLTAGE,
@@ -64,23 +64,21 @@ MotorController::MotorController()
 				MOTOR_IC_CONFIG
 		},
 	  }
-	};
-	MotorParameterInitData = (MotorParameterData_t*)(params);
+	}
+{
 
 	initMotors();
 }
 
 void MotorController::initMotors(){
 	MotorParameterData_t *MotorParameterDataSingle;
-	MotorParameterData_t *MotorParameterDataGlobal;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 
-	MotorParameterDataGlobal = MotorParameterInitData;
 
 	for (uint8_t id = 0; id < EXPBRD_MOUNTED_NR; id++)
 	{
 		StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(EXPBRD_ID(id));
-		MotorParameterDataSingle = MotorParameterDataGlobal+(id*L6470DAISYCHAINSIZE);
+		MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+(id*L6470DAISYCHAINSIZE);
 		StepperMotorBoardHandle->Config(MotorParameterDataSingle);
 	}
 }
@@ -94,7 +92,9 @@ void MotorController::setSpeed(uint8_t motor, uint32_t speed){
 	board = EXPBRD_ID(0);
 	device = L6470_ID(motor);
 
-	MotorParameterDataSingle = MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(EXPBRD_ID(motor));
+
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 	_speed = Step_s_2_Speed(speed);
 
 
@@ -111,7 +111,7 @@ void MotorController::setPosition(uint8_t motor, uint32_t position){
 	board = EXPBRD_ID(0);
 	device = L6470_ID(motor);
 
-	MotorParameterDataSingle = MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 
 	StepperMotorBoardHandle->StepperMotorDriverHandle[device]->Command->PrepareGoTo(device, position);
 	StepperMotorBoardHandle->Command->PerformPreparedApplicationCommand();
@@ -128,7 +128,7 @@ uint32_t  MotorController::getPosition(uint8_t motor){
 	board = EXPBRD_ID(0);
 	device = L6470_ID(motor);
 
-	MotorParameterDataSingle = MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 
 	return StepperMotorBoardHandle->StepperMotorDriverHandle[device]->Command->GetParam(device,L6470_ABS_POS_ID);
 
@@ -160,7 +160,7 @@ void MotorController::softStop(uint8_t motor){
 	board = EXPBRD_ID(0);
 	device = L6470_ID(motor);
 
-	MotorParameterDataSingle = MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 
 	StepperMotorBoardHandle->StepperMotorDriverHandle[device]->Command->PrepareSoftHiZ(device);
 	StepperMotorBoardHandle->Command->PerformPreparedApplicationCommand();
@@ -176,11 +176,10 @@ void MotorController::hardStop(uint8_t motor){
 	board = EXPBRD_ID(0);
 	device = L6470_ID(motor);
 
-	MotorParameterDataSingle = MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 
 	StepperMotorBoardHandle->StepperMotorDriverHandle[device]->Command->PrepareHardHiZ(device);
 	StepperMotorBoardHandle->Command->PerformPreparedApplicationCommand();
 
 }
-
 

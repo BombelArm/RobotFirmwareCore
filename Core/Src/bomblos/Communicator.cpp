@@ -6,7 +6,7 @@ Communicator::Communicator():
 	cmd_sub(CMD_SUB_NAME, &Communicator::cmd_callback, this)
 {
 	nh.initNode();
-	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_RESET);
+//	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_RESET);
 	//publishers
 	nh.advertise(status_pub);
 
