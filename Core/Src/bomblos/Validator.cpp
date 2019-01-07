@@ -8,6 +8,8 @@
 #include "bomblos/Validator.hpp"
 #include "stdint.h"
 
+namespace bomblos{
+
 Validator::Validator(
 		uint32_t vel_j0,
 		uint32_t vel_j1,
@@ -127,4 +129,6 @@ uint8_t Validator::validate(	uint32_t vel_j0,
 
 std::vector<ValidatorError> Validator::getErrorRegister(){
 	return error_register;
+}
+
 }

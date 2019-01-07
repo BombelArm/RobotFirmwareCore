@@ -6,37 +6,12 @@
  */
 
 #include "bomblos/MotorController.hpp"
-#include "motors_param.h"
+
+namespace bomblos{
 
 MotorController::MotorController():
 	MotorParameterInitData	{
 	  {
-	    {
-	    		MOTOR_SUPPLY_VOLTAGE,
-	    		MIN_STEPS_PER_REVOLUTION,
-	    		MAX_MOTOR_PHASE_VOLTAGE_AMPR,
-	    		MAX_MOTOR_PHASE_VOLTAGE_VOLT,
-	    		MOTOR_INIT_SPEED,
-	    		MOTOR_ACC,
-	    		MOTOR_DECC,
-	    		MOTOR_MAX_SPEED,
-	    		MOTOR_MIN_SPEED,
-	    		MOTOR_SPEED_THRESHOLD,
-	    		MOTOR_HOLDING_KVAL,
-	    		MOTOR_CONST_SPEED_KVAL,
-	    		MOTOR_ACC_START_KVAL,
-	    		MOTOR_DECC_START_KVAL,
-	    		MOTOR_INTERSECT_SPEED,
-	    		MOTOR_START_SLOPE,
-	    		MOTOR_ACC_FINAL_SLOPE,
-	    		MOTOR_DECC_FINAL_SLOPE,
-	    		MOTOR_THERMAL_COMP,
-	    		MOTOR_OCD_THRESHOLD,
-	    		MOTOR_STALL_THRESHOLD,
-	    		MOTOR_MICROSTEP,
-	    		MOTOR_ALARM_CONDITIOnS,
-	    		MOTOR_IC_CONFIG
-	    },
 		{
 				MOTOR_SUPPLY_VOLTAGE,
 				MIN_STEPS_PER_REVOLUTION,
@@ -63,6 +38,86 @@ MotorController::MotorController():
 				MOTOR_ALARM_CONDITIOnS,
 				MOTOR_IC_CONFIG
 		},
+		{
+				MOTOR_SUPPLY_VOLTAGE,
+				MIN_STEPS_PER_REVOLUTION,
+				MAX_MOTOR_PHASE_VOLTAGE_AMPR,
+				MAX_MOTOR_PHASE_VOLTAGE_VOLT,
+				MOTOR_INIT_SPEED,
+				MOTOR_ACC,
+				MOTOR_DECC,
+				MOTOR_MAX_SPEED,
+				MOTOR_MIN_SPEED,
+				MOTOR_SPEED_THRESHOLD,
+				MOTOR_HOLDING_KVAL,
+				MOTOR_CONST_SPEED_KVAL,
+				MOTOR_ACC_START_KVAL,
+				MOTOR_DECC_START_KVAL,
+				MOTOR_INTERSECT_SPEED,
+				MOTOR_START_SLOPE,
+				MOTOR_ACC_FINAL_SLOPE,
+				MOTOR_DECC_FINAL_SLOPE,
+				MOTOR_THERMAL_COMP,
+				MOTOR_OCD_THRESHOLD,
+				MOTOR_STALL_THRESHOLD,
+				MOTOR_MICROSTEP,
+				MOTOR_ALARM_CONDITIOnS,
+				MOTOR_IC_CONFIG
+		}
+	  },
+	  {
+		{
+				MOTOR_SUPPLY_VOLTAGE,
+				MIN_STEPS_PER_REVOLUTION,
+				MAX_MOTOR_PHASE_VOLTAGE_AMPR,
+				MAX_MOTOR_PHASE_VOLTAGE_VOLT,
+				MOTOR_INIT_SPEED,
+				MOTOR_ACC,
+				MOTOR_DECC,
+				MOTOR_MAX_SPEED,
+				MOTOR_MIN_SPEED,
+				MOTOR_SPEED_THRESHOLD,
+				MOTOR_HOLDING_KVAL,
+				MOTOR_CONST_SPEED_KVAL,
+				MOTOR_ACC_START_KVAL,
+				MOTOR_DECC_START_KVAL,
+				MOTOR_INTERSECT_SPEED,
+				MOTOR_START_SLOPE,
+				MOTOR_ACC_FINAL_SLOPE,
+				MOTOR_DECC_FINAL_SLOPE,
+				MOTOR_THERMAL_COMP,
+				MOTOR_OCD_THRESHOLD,
+				MOTOR_STALL_THRESHOLD,
+				MOTOR_MICROSTEP,
+				MOTOR_ALARM_CONDITIOnS,
+				MOTOR_IC_CONFIG
+		},
+		{
+				MOTOR_SUPPLY_VOLTAGE,
+				MIN_STEPS_PER_REVOLUTION,
+				MAX_MOTOR_PHASE_VOLTAGE_AMPR,
+				MAX_MOTOR_PHASE_VOLTAGE_VOLT,
+				MOTOR_INIT_SPEED,
+				MOTOR_ACC,
+				MOTOR_DECC,
+				MOTOR_MAX_SPEED,
+				MOTOR_MIN_SPEED,
+				MOTOR_SPEED_THRESHOLD,
+				MOTOR_HOLDING_KVAL,
+				MOTOR_CONST_SPEED_KVAL,
+				MOTOR_ACC_START_KVAL,
+				MOTOR_DECC_START_KVAL,
+				MOTOR_INTERSECT_SPEED,
+				MOTOR_START_SLOPE,
+				MOTOR_ACC_FINAL_SLOPE,
+				MOTOR_DECC_FINAL_SLOPE,
+				MOTOR_THERMAL_COMP,
+				MOTOR_OCD_THRESHOLD,
+				MOTOR_STALL_THRESHOLD,
+				MOTOR_MICROSTEP,
+				MOTOR_ALARM_CONDITIOnS,
+				MOTOR_IC_CONFIG
+		}
 	  }
 	}
 {
@@ -84,22 +139,26 @@ void MotorController::initMotors(){
 }
 
 void MotorController::setSpeed(uint8_t motor, uint32_t speed){
-	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
+	MotorParameterData_t *MotorParameterDataSingle;
 	uint8_t board, device;
 	uint32_t _speed;
+	uint32_t Step, i, MovementPerRevolution;
 
-	board = EXPBRD_ID(0);
-	device = L6470_ID(motor);
+	MovementPerRevolution = 200;
 
-	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(EXPBRD_ID(motor));
+	if(motor == 0 || motor == 1){
+		board = EXPBRD_ID(0);
+		device = L6470_ID(motor);
+	}else if(motor == 2 || motor == 3){
+		board = EXPBRD_ID(1);
+		device = L6470_ID(motor - 2);
+	}
 
-	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+    StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
+    MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 	_speed = Step_s_2_Speed(speed);
-
-
-	StepperMotorBoardHandle->StepperMotorDriverHandle[device]->Command->PrepareRun(device, L6470_DIR_FWD_ID, _speed);
-	StepperMotorBoardHandle->Command->PerformPreparedApplicationCommand();
+	StepperMotorBoardHandle->Command->Run(board,device, L6470_DIR_REV_ID, _speed);
 }
 
 void MotorController::setPosition(uint8_t motor, uint32_t position){
@@ -183,3 +242,4 @@ void MotorController::hardStop(uint8_t motor){
 
 }
 
+}

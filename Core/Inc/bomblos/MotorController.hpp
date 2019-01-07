@@ -12,10 +12,11 @@
 
 #include "L6470.h"
 #include "xnucleoihm02a1.h"
+#include "stm32f4xx_hal.h"
 
 #define MOTOR_SUPPLY_VOLTAGE 			12.0				//!< motor supply voltage in V
 #define MIN_STEPS_PER_REVOLUTION 		400					//!< min number of steps per revolution for the motor
-#define MAX_MOTOR_PHASE_VOLTAGE_AMPR 	0.1					//!< max motor phase voltage in A
+#define MAX_MOTOR_PHASE_VOLTAGE_AMPR 	0.9					//!< max motor phase voltage in A
 #define MAX_MOTOR_PHASE_VOLTAGE_VOLT 	3.06				//!< max motor phase voltage in V
 #define MOTOR_INIT_SPEED 				300.0				//!< motor initial speed [step/s]
 #define MOTOR_ACC 						500.0				//!< motor acceleration [step/s^2] (comment for infinite acceleration mode)
@@ -38,6 +39,8 @@
 #define MOTOR_ALARM_CONDITIOnS 			0xFF				//!< alarm conditions enable
 #define MOTOR_IC_CONFIG 				0x2E88				//!< ic configuration
 
+namespace bomblos{
+
 class MotorController{
 private:
 	MotorParameterData_t MotorParameterInitData[EXPBRD_MOUNTED_NR][L6470DAISYCHAINSIZE];
@@ -55,5 +58,6 @@ public:
 	sL6470_StatusRegister_t getStatus(uint8_t motor);
 };
 
+}
 
 #endif /* BOMBLOS_MOTORCONTROLLER_HPP_ */

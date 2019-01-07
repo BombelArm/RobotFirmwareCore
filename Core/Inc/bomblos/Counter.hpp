@@ -9,56 +9,67 @@
 #define BOMBLOS_COUNTER_HPP_
 
 #include "stdint.h"
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_tim.h"
+//#include "stm32f4xx_hal_tim.h"
+namespace bomblos{
 
 template<typename ObjT >
 class Counter{
 	public:
 		typedef void(ObjT::*CallbackT)();
 
-		Counter(int period,CallbackT cb, ObjT* obj):
-			cb_(cb),
-			obj_(obj),
-			period_(period),
-			state_(0),
-			overflowed_(0),
-			started_(false){};
+		Counter(int period,CallbackT cb, ObjT* obj, TIM_HandleTypeDef &htim):
+			_cb(cb),
+			_obj(obj),
+			_period(period),
+			_state(0),
+			_overflowed(0),
+			_started(false){
+			_htim=htim;
+		};
 
 		void resetState(){
-			state_= 0;
+			_state= 0;
 		};
 
 		void clearOverflow(){
-			overflowed_ = 0;
+			_overflowed = 0;
 		}
 		void inc(){
-			if(!started_) return;
-			state_++;
-			if(state_ >= period_){
-				overflowed_= 1;
-				(obj_->*cb_)();
+			if(!_started) return;
+			_state++;
+			if(_state >= +_period){
+				_overflowed= 1;
+				(_obj->*_cb)();
 			}
 		};
 
 		uint32_t getState(){
-			return state_;
+			return _state;
 		};
 
 		void start(){
-			started_ = true;
+			HAL_TIM_Base_Start_IT(&_htim);
+			_started = true;
+
 		}
 
 		void stop(){
-			started_ = false;
+			_started = false;
+			HAL_TIM_Base_Stop_IT(&_htim);
 		}
 
 	private:
-		uint8_t started_;
-		uint32_t state_;
-		uint32_t period_;
-		uint8_t overflowed_;
-		CallbackT cb_;
-		ObjT* obj_;
+		uint8_t _started;
+		uint32_t _state;
+		uint32_t _period;
+		TIM_HandleTypeDef _htim;
+		uint8_t _overflowed;
+		CallbackT _cb;
+		ObjT* _obj;
 };
 
+}
 
 #endif /* BOMBLOS_COUNTER_HPP_ */

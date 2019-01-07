@@ -31,6 +31,8 @@
 #define POS_JOINT1_MAX 0
 #define POS_JOINT2_MAX 0
 
+namespace bomblos{
+
 enum ValidatorErrorName{
 	acc_joint0=1,
 	acc_joint1,
@@ -85,6 +87,7 @@ public:
 	std::vector<ValidatorError> getErrorRegister();
 };
 
+}
 
 
 #endif /* BOMBLOS_VALIDATOR_HPP_ */

@@ -18,11 +18,14 @@ namespace bombel_msgs
       _joint1_speed_type joint1_speed;
       typedef uint32_t _joint2_speed_type;
       _joint2_speed_type joint2_speed;
+      typedef uint32_t _joint3_speed_type;
+      _joint3_speed_type joint3_speed;
 
     BombelSpeed():
       joint0_speed(0),
       joint1_speed(0),
-      joint2_speed(0)
+      joint2_speed(0),
+      joint3_speed(0)
     {
     }
 
@@ -44,6 +47,11 @@ namespace bombel_msgs
       *(outbuffer + offset + 2) = (this->joint2_speed >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (this->joint2_speed >> (8 * 3)) & 0xFF;
       offset += sizeof(this->joint2_speed);
+      *(outbuffer + offset + 0) = (this->joint3_speed >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (this->joint3_speed >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (this->joint3_speed >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (this->joint3_speed >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->joint3_speed);
       return offset;
     }
 
@@ -65,11 +73,16 @@ namespace bombel_msgs
       this->joint2_speed |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
       this->joint2_speed |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       offset += sizeof(this->joint2_speed);
+      this->joint3_speed =  ((uint32_t) (*(inbuffer + offset)));
+      this->joint3_speed |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      this->joint3_speed |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      this->joint3_speed |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      offset += sizeof(this->joint3_speed);
      return offset;
     }
 
     const char * getType(){ return "bombel_msgs/BombelSpeed"; };
-    const char * getMD5(){ return "1bbb7d55849e90cf36bc526484df40fd"; };
+    const char * getMD5(){ return "80dcdbf5905ead8ad45545d1df7eb7ef"; };
 
   };
 

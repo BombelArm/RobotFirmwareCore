@@ -20,6 +20,10 @@
 #define MSG_PERIOD 10 //in 10ms == 100Hz
 
 
+extern TIM_HandleTypeDef htim2;
+
+namespace bomblos{
+
 class Communicator
 {
 	private:
@@ -37,12 +41,14 @@ class Communicator
 		Counter<Communicator> counter; //counts in ms (TIM3)
 		void desync_callback();
 
-
 	public:
 		Communicator(MotorController *m1);
 		ros::NodeHandle& 	getNodeHandle();
 		Counter<Communicator>&	getCounter();
 };
+
+}
+
 
 
 #endif /* BOMBLOS_COMMUNICATOR_HPP_ */
