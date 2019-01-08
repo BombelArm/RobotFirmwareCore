@@ -10,13 +10,14 @@
 
 #include <bomblos/Counter.hpp>
 #include <bomblos/MotorController.hpp>
+#include <bombel_msgs/BombelSpeed.h>
+#include <bombel_msgs/BombelState.h>
 #include <ros.h>
 #include <std_msgs/UInt64.h>
-#include <bombel_msgs/BombelSpeed.h>
-#include <std_msgs/UInt32.h>
+#include <std_msgs/Int16.h>
 
 #define SPEED_SUB_NAME "bombel/speed"
-#define STATUS_PUB_NAME "bombel/status"
+#define STATE_PUB_NAME "bombel/state"
 #define MSG_PERIOD 10 //in 10ms == 100Hz
 
 
@@ -29,11 +30,11 @@ class Communicator
 	private:
 
 		//ROS
-		ros::NodeHandle 	nh;
-		std_msgs::UInt64  	status_msg;
-		ros::Publisher		status_pub;
-		ros::Subscriber		<bombel_msgs::BombelSpeed, Communicator> 	speed_sub;
-		MotorController 	*motor_controller;
+		ros::NodeHandle 			nh;
+		bombel_msgs::BombelState	state_msg;
+		ros::Publisher				state_pub;
+//		ros::Subscriber				<bombel_msgs::BombelSpeed, Communicator> 	speed_sub;
+		MotorController 			*motor_controller;
 
 		void speed_msg_callback(const bombel_msgs::BombelSpeed& speed_msg);
 
@@ -43,6 +44,9 @@ class Communicator
 
 	public:
 		Communicator(MotorController *m1);
+
+		void publishState();
+
 		ros::NodeHandle& 	getNodeHandle();
 		Counter<Communicator>&	getCounter();
 };

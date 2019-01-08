@@ -78,22 +78,16 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define B1_Pin GPIO_PIN_13
-#define B1_GPIO_Port GPIOC
-#define USART_TX_Pin GPIO_PIN_2
-#define USART_TX_GPIO_Port GPIOA
-#define USART_RX_Pin GPIO_PIN_3
-#define USART_RX_GPIO_Port GPIOA
 #define IHM02A1_CS0_Pin GPIO_PIN_4
 #define IHM02A1_CS0_GPIO_Port GPIOA
+#define ENCODER_CS0_Pin GPIO_PIN_12
+#define ENCODER_CS0_GPIO_Port GPIOB
+#define ENCODER_CS2_Pin GPIO_PIN_7
+#define ENCODER_CS2_GPIO_Port GPIOC
 #define IHM02A1_CS1_Pin GPIO_PIN_10
 #define IHM02A1_CS1_GPIO_Port GPIOA
-#define TMS_Pin GPIO_PIN_13
-#define TMS_GPIO_Port GPIOA
-#define TCK_Pin GPIO_PIN_14
-#define TCK_GPIO_Port GPIOA
-#define SWO_Pin GPIO_PIN_3
-#define SWO_GPIO_Port GPIOB
+#define ENCODER_CS1_Pin GPIO_PIN_6
+#define ENCODER_CS1_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

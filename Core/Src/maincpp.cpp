@@ -27,11 +27,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
 void setup(void)
 {
-	motors = new bomblos::MotorController();
+//	motors = new bomblos::MotorController();
 	com = new bomblos::Communicator(motors);
 }
 
 void loop(void)
 {
+	com->publishState();
 	com->getNodeHandle().spinOnce();
+	HAL_Delay(100);
 }
