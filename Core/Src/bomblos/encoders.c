@@ -44,7 +44,7 @@ HAL_StatusTypeDef encoder_read(int16_t *data_in,int cs)
 	pin=e_pins[cs];
 
 	HAL_GPIO_WritePin(port, pin, GPIO_PIN_RESET);
-	status=HAL_SPI_Receive(&SPI_HandleTypeDef   , &data, 1, 0x00ff);
+	status=HAL_SPI_Receive(&HSPI   , &data, 1, 0x00ff);
 	data=(uint16_t) data>>4;
 	HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
 

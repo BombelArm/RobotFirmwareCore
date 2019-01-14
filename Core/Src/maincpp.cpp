@@ -9,31 +9,28 @@
 #include "xnucleoihm02a1.h"
 #include <ros.h>
 #include <std_msgs/UInt64.h>
-#include <bomblos/MotorController.hpp>
-#include <bomblos/Communicator.hpp>
+#include <bomblos/Controller.hpp>
 
 
-bomblos::MotorController *motors;
-bomblos::Communicator *com;
+bomblos::Controller *controller;
+ros::NodeHandle *nh;
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
-	if(com) com->getNodeHandle().getHardware()->flush();
+	if(nh) nh->getHardware()->flush();
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	if(com) com->getNodeHandle().getHardware()->reset_rbuf();
+	if(nh) nh->getHardware()->reset_rbuf();
 }
-
-
 void setup(void)
 {
-//	motors = new bomblos::MotorController();
-	com = new bomblos::Communicator(motors);
+	controller = new bomblos::Controller();
+	nh = &controller->getNodeHandle();
 }
 
 void loop(void)
 {
-	com->publishState();
-	com->getNodeHandle().spinOnce();
+	nh->spinOnce();
+	controller->publishState();
 	HAL_Delay(100);
 }

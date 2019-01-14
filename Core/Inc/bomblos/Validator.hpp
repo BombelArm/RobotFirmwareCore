@@ -11,8 +11,8 @@
 #include "stdint.h"
 #include <vector>
 
-#define ACC_JOINT1_LIMIT 0
 #define ACC_JOINT0_LIMIT 0
+#define ACC_JOINT1_LIMIT 0
 #define ACC_JOINT2_LIMIT 0
 
 #define VEL_JOINT0_MIN 0
