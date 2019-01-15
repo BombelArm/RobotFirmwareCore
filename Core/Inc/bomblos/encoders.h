@@ -26,8 +26,8 @@ extern "C" {
 #define ENCODER2_OFFSET -381/**<  \brief Encoder 2 offset - base position calibration */
 
 #define ENCODER0_DIR	-1
-#define ENCODER1_DIR	1
-#define ENCODER2_DIR	1
+#define ENCODER1_DIR	-1
+#define ENCODER2_DIR	-1
 
 /*!
  * \details This function reads angle from the encoder
@@ -35,6 +35,8 @@ extern "C" {
  * \param cs encoder chip select (0,1,2)
  * \return HAL_StatusTypeDef  return code
  */
+
+
 HAL_StatusTypeDef encoder_read(int16_t *data_in, int cs);
 
 #ifdef __cplusplus

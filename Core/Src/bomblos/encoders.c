@@ -18,6 +18,8 @@ HAL_StatusTypeDef encoder_read(int16_t *data_in,int cs)
 	uint16_t	  pin;
 	uint16_t	  data;
 
+
+
 	int8_t		  e_dirs[JOINTS_N]={
 							ENCODER0_DIR,
 							ENCODER1_DIR,
@@ -38,7 +40,6 @@ HAL_StatusTypeDef encoder_read(int16_t *data_in,int cs)
 							ENCODER1_OFFSET,
 							ENCODER2_OFFSET
 						};
-
 
 	port=e_ports[cs];
 	pin=e_pins[cs];

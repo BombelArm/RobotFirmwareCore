@@ -11,7 +11,7 @@
 
 namespace bomblos{
 
-Motors::Motors(uint16_t nextStepPeriod):
+Motors::Motors(uint16_t nextPosFreq):
 	MotorParameterInitData	{
 	  {
 		{
@@ -19,10 +19,10 @@ Motors::Motors(uint16_t nextStepPeriod):
 				MOTOR_0_MIN_STEPS_PER_REVOLUTION,
 				MAX_MOTOR_PHASE_VOLTAGE_AMPR,
 				MAX_MOTOR_PHASE_VOLTAGE_VOLT,
-				MOTOR_INIT_SPEED,
-				MOTOR_ACC,
-				MOTOR_DECC,
-				MOTOR_MAX_SPEED,
+				MOTOR_0_INIT_SPEED,
+				MOTOR_0_ACC,
+				MOTOR_0_DECC,
+				MOTOR_0_MAX_SPEED,
 				MOTOR_MIN_SPEED,
 				MOTOR_SPEED_THRESHOLD,
 				MOTOR_HOLDING_KVAL,
@@ -45,10 +45,10 @@ Motors::Motors(uint16_t nextStepPeriod):
 				MOTOR_1_MIN_STEPS_PER_REVOLUTION,
 				MAX_MOTOR_PHASE_VOLTAGE_AMPR,
 				MAX_MOTOR_PHASE_VOLTAGE_VOLT,
-				MOTOR_INIT_SPEED,
-				MOTOR_ACC,
-				MOTOR_DECC,
-				MOTOR_MAX_SPEED,
+				MOTOR_1_INIT_SPEED,
+				MOTOR_1_ACC,
+				MOTOR_1_DECC,
+				MOTOR_1_MAX_SPEED,
 				MOTOR_MIN_SPEED,
 				MOTOR_SPEED_THRESHOLD,
 				MOTOR_HOLDING_KVAL,
@@ -73,10 +73,10 @@ Motors::Motors(uint16_t nextStepPeriod):
 				MOTOR_2_MIN_STEPS_PER_REVOLUTION,
 				MAX_MOTOR_PHASE_VOLTAGE_AMPR,
 				MAX_MOTOR_PHASE_VOLTAGE_VOLT,
-				MOTOR_INIT_SPEED,
-				MOTOR_ACC,
-				MOTOR_DECC,
-				MOTOR_MAX_SPEED,
+				MOTOR_2_INIT_SPEED,
+				MOTOR_2_ACC,
+				MOTOR_2_DECC,
+				MOTOR_2_MAX_SPEED,
 				MOTOR_MIN_SPEED,
 				MOTOR_SPEED_THRESHOLD,
 				MOTOR_HOLDING_KVAL,
@@ -99,10 +99,10 @@ Motors::Motors(uint16_t nextStepPeriod):
 				MOTOR_2_MIN_STEPS_PER_REVOLUTION,
 				MAX_MOTOR_PHASE_VOLTAGE_AMPR,
 				MAX_MOTOR_PHASE_VOLTAGE_VOLT,
-				MOTOR_INIT_SPEED,
-				MOTOR_ACC,
-				MOTOR_DECC,
-				MOTOR_MAX_SPEED,
+				MOTOR_2_INIT_SPEED,
+				MOTOR_2_ACC,
+				MOTOR_2_DECC,
+				MOTOR_2_MAX_SPEED,
 				MOTOR_MIN_SPEED,
 				MOTOR_SPEED_THRESHOLD,
 				MOTOR_HOLDING_KVAL,
@@ -194,7 +194,7 @@ Motors::Motors(uint16_t nextStepPeriod):
 
 	}
 
-	Motors::nextStepPeriod = nextStepPeriod;
+	Motors::nextPosFreq = 1000/nextPosFreq; // 1s=1000ms || nextPosFreq [ms]
 
 	initMotors();
 }
@@ -218,7 +218,7 @@ int32_t Motors::rad2AbsPosReg(uint8_t motor, float rad){
 	uint16_t microStepMultiplier = motorMicroStepMultiplier[motor];
 	float fullStepPerRev = motorStepsPerJointRev[motor];
 
-	absPosReg = rad*fullStepPerRev*microStepMultiplier/(M_PI);
+	absPosReg = rad*fullStepPerRev*microStepMultiplier/(2*M_PI);
 
 	return absPosReg;
 }
@@ -236,12 +236,11 @@ void Motors::initMotors(){
 	}
 }
 
-void Motors::setSpeed(uint8_t motor, float speed){
+void Motors::setSpeed(uint8_t motor, uint32_t speed){
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 	MotorParameterData_t *MotorParameterDataSingle;
 	uint8_t board, device;
-	uint32_t _speed;
-	uint32_t Step, i, MovementPerRevolution;
+	uint32_t Step, i, _speed;
 	eL6470_DirId_t dir;
 
 	dir = motorNativeDirections[motor];
@@ -263,8 +262,8 @@ void Motors::setSpeed(uint8_t motor, float speed){
 
     StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
     MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
-//	_speed = Step_s_2_Speed(speed/MOTOR_1_MIN_STEPS_PER_REVOLUTION);
-	StepperMotorBoardHandle->Command->Run(board,device, dir, speed);
+	_speed = Step_s_2_Speed(speed);
+	StepperMotorBoardHandle->Command->Run(board,device, dir, _speed);
 
 }
 
@@ -282,13 +281,33 @@ void Motors::setPosition(uint8_t motor, int32_t position){
 		device = L6470_ID(motor - 2);
 	}
 
-	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
 
+	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
+	if(motorNativeDirections[motor] == L6470_DIR_REV_ID) position = -position;
 	uint32_t _position = Position_2_AbsPos(position);
 	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 	StepperMotorBoardHandle->Command->GoTo(board,device, _position);
 }
 
+void Motors::move(uint8_t motor, uint32_t steps){
+	MotorParameterData_t *MotorParameterDataSingle;
+	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
+	uint8_t board, device;
+
+
+	if(motor == 0 || motor == 1){
+		board = EXPBRD_ID(0);
+		device = L6470_ID(motor);
+	}else if(motor == 2 || motor == 3){
+		board = EXPBRD_ID(1);
+		device = L6470_ID(motor - 2);
+	}
+
+	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	StepperMotorBoardHandle->Command->Move(board,device,L6470_DIR_FWD_ID,steps);
+
+}
 
 void Motors::setNextPosition(uint8_t motor, int32_t position){
 	MotorParameterData_t *MotorParameterDataSingle;
@@ -316,13 +335,10 @@ void Motors::setNextPosition(uint8_t motor, int32_t position){
 		else dir = L6470_DIR_FWD_ID;
 	}
 
-//	float speed = Step_s_2_Speed(distance*nextStepPeriod);
-
-
-
-	uint32_t _position = Position_2_AbsPos(position);
+	float full_steps_s=(float) distance*nextPosFreq/ motorMicroStepMultiplier[motor];
+	uint32_t speed = Step_s_2_Speed(full_steps_s);
 	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
-	StepperMotorBoardHandle->Command->GoTo(board,device, _position);
+	StepperMotorBoardHandle->Command->Run(board,device,dir,speed);
 }
 
 int32_t  Motors::getRegPosition(uint8_t motor){
@@ -346,7 +362,11 @@ int32_t  Motors::getRegPosition(uint8_t motor){
 	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 	uint32_t regVal= StepperMotorBoardHandle->Command->GetParam(board,device,L6470_ABS_POS_ID);
 
-	return AbsPos_2_Position(regVal);
+	int32_t abs_pos = AbsPos_2_Position(regVal);
+	if(motorNativeDirections[motor] == L6470_DIR_REV_ID) abs_pos = -abs_pos;
+
+	return abs_pos;
+
 }
 
 int16_t  Motors::getEncoderPosition(uint8_t motor){

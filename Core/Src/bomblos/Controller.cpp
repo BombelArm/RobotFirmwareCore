@@ -18,6 +18,9 @@ Controller::Controller():
 
 	//subscribers
 	nh.subscribe(pos_sub);
+
+//	motors.setSpeed(1,0);
+
 }
 
 void Controller::publishState(){
@@ -27,10 +30,6 @@ void Controller::publishState(){
 	encoder_read(&encoder1,1);
 	encoder_read(&encoder2,2);
 
-//	encoder0 = motors.getRegPosition(0);
-//	encoder1 = motors.getRegPosition(1);
-//	encoder2 = motors.getRegPosition(2);
-//
 	state_msg.encoder0_pos = encoder0;
 	state_msg.encoder1_pos = encoder1;
 	state_msg.encoder2_pos = encoder2;
@@ -46,11 +45,20 @@ void Controller::pos_msg_callback(const bombel_msgs::BombelPos& pos_msg){
 	int32_t motor0AbsReg = motors.rad2AbsPosReg(0,pos_msg.joint0_pos);
 	int32_t motor1AbsReg = motors.rad2AbsPosReg(1,pos_msg.joint1_pos);
 	int32_t motor2AbsReg = motors.rad2AbsPosReg(2,pos_msg.joint2_pos);
+//
+	motors.setNextPosition(0, motor0AbsReg);
+	motors.setNextPosition(1, motor1AbsReg);
+	motors.setNextPosition(2, motor2AbsReg);
 
 //	motors.setPosition(0, motor0AbsReg);
 //	motors.setPosition(1, motor1AbsReg);
 //	motors.setPosition(2, motor2AbsReg);
-	motors.setSpeed(2,motor2AbsReg);
+
+	if(pos_msg.seq == -1){
+		motors.setSpeed(0,0);
+		motors.setSpeed(1,0);
+		motors.setSpeed(2,0);
+	}
 }
 
 ros::NodeHandle& Controller::getNodeHandle(){
