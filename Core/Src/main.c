@@ -116,11 +116,13 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_USART2_UART_Init();
-  MX_SPI1_Init();
   MX_ADC1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_TIM4_Init();
   MX_SPI2_Init();
+  MX_SPI1_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
   BSP_Init();
 
@@ -205,7 +207,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if (htim->Instance == TIM3){
+	  TIM3_PeriodElapsedCallback();
+  }else if (htim->Instance == TIM4){
+	  TIM4_PeriodElapsedCallback();
+  }else if (htim->Instance == TIM5){
+	  TIM5_PeriodElapsedCallback();
+  }
   /* USER CODE END Callback 1 */
 }
 

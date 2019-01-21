@@ -10,6 +10,7 @@
 
 #include <bomblos/Counter.hpp>
 #include <bomblos/Motors.hpp>
+#include <bomblos/limits.hpp>
 #include <bomblos/Validator.hpp>
 #include <bombel_msgs/BombelPos.h>
 #include <bombel_msgs/BombelState.h>
@@ -19,7 +20,7 @@
 
 #define POS_SUB_NAME "bombel/pos"
 #define STATE_PUB_NAME "bombel/state"
-#define MSG_PERIOD 100 //in 10ms == 100Hz
+#define MSG_FREQ 20 //20Hz
 
 
 extern TIM_HandleTypeDef htim2;
@@ -40,6 +41,8 @@ class Controller
 		Validator					validator;
 		Motors 						motors;
 
+		int32_t previousPositions[JOINTS_N];
+		uint32_t previousTimestamp;
 
 		void pos_msg_callback(const bombel_msgs::BombelPos& pos_msg);
 

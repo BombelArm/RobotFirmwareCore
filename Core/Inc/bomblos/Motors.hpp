@@ -80,18 +80,15 @@ private:
 	float motorStepsPerJointRev[JOINTS_N];
 	int32_t motorPrevAbsPos[JOINTS_N];
 
-	uint16_t nextPosFreq; //in Hz;
-
-
 	void initMotors();
 
 
 public:
-	Motors(uint16_t nextPosFreq);
+	Motors();
 
 	void setSpeed(uint8_t motor, uint32_t speed);
 	void setPosition(uint8_t motor, int32_t position);
-	void setNextPosition(uint8_t motor, int32_t position);
+	void setNextPosition(uint8_t motor, int32_t position, uint16_t time);
 	void move(uint8_t motor, uint32_t steps);
 	void softStop(uint8_t motor);
 	void hardStop(uint8_t motor);

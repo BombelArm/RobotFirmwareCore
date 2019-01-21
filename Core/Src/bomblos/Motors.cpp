@@ -11,7 +11,7 @@
 
 namespace bomblos{
 
-Motors::Motors(uint16_t nextPosFreq):
+Motors::Motors():
 	MotorParameterInitData	{
 	  {
 		{
@@ -194,8 +194,6 @@ Motors::Motors(uint16_t nextPosFreq):
 
 	}
 
-	Motors::nextPosFreq = 1000/nextPosFreq; // 1s=1000ms || nextPosFreq [ms]
-
 	initMotors();
 }
 
@@ -309,7 +307,7 @@ void Motors::move(uint8_t motor, uint32_t steps){
 
 }
 
-void Motors::setNextPosition(uint8_t motor, int32_t position){
+void Motors::setNextPosition(uint8_t motor, int32_t position, uint16_t time){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 	uint8_t board, device;
@@ -335,7 +333,7 @@ void Motors::setNextPosition(uint8_t motor, int32_t position){
 		else dir = L6470_DIR_FWD_ID;
 	}
 
-	float full_steps_s=(float) distance*nextPosFreq/ motorMicroStepMultiplier[motor];
+	float full_steps_s=(float) distance*time/motorMicroStepMultiplier[motor];
 	uint32_t speed = Step_s_2_Speed(full_steps_s);
 	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
 	StepperMotorBoardHandle->Command->Run(board,device,dir,speed);

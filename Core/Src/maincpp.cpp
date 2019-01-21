@@ -12,6 +12,9 @@
 #include <bomblos/Controller.hpp>
 
 
+extern TIM_HandleTypeDef htim4;
+extern TIM_HandleTypeDef htim5;
+
 bomblos::Controller *controller;
 ros::NodeHandle *nh;
 
@@ -22,15 +25,24 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(nh) nh->getHardware()->reset_rbuf();
 }
+
+void TIM3_PeriodElapsedCallback(){}
+void TIM4_PeriodElapsedCallback(){
+	if(nh) nh->spinOnce();
+}
+void TIM5_PeriodElapsedCallback(){
+	if(controller) controller->publishState();
+}
+
 void setup(void)
 {
 	controller = new bomblos::Controller();
 	nh = &controller->getNodeHandle();
+
+	HAL_TIM_Base_Start_IT(&htim4);
+	HAL_TIM_Base_Start_IT(&htim5);
 }
 
 void loop(void)
 {
-	nh->spinOnce();
-	controller->publishState();
-	HAL_Delay(100);
 }

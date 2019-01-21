@@ -15,6 +15,11 @@
 void setup(void);
 void loop(void);
 
+
+void TIM3_PeriodElapsedCallback();
+void TIM4_PeriodElapsedCallback();
+void TIM5_PeriodElapsedCallback();
+
 #ifdef __cplusplus
 }
 #endif
