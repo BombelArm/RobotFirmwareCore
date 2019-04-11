@@ -197,6 +197,7 @@ Motors::Motors():
 	initMotors();
 }
 
+//convert L6470 abs position register value to radians
 int32_t Motors::absPosReg2Encoder(uint8_t motor, int32_t absPos){
 	int32_t encoderPos;
 	uint16_t microStepMultiplier = motorMicroStepMultiplier[motor];
@@ -211,6 +212,7 @@ int32_t Motors::encoder2AbsPosReg(uint8_t motor, int32_t absPos){
 	return 1;
 }
 
+//convert radians to L6470 abs position register
 int32_t Motors::rad2AbsPosReg(uint8_t motor, float rad){
 	int32_t absPosReg;
 	uint16_t microStepMultiplier = motorMicroStepMultiplier[motor];
@@ -221,6 +223,7 @@ int32_t Motors::rad2AbsPosReg(uint8_t motor, float rad){
 	return absPosReg;
 }
 
+//initiate motors and pass them stored configuration
 void Motors::initMotors(){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
@@ -234,6 +237,8 @@ void Motors::initMotors(){
 	}
 }
 
+
+//implementation of L6470 Run command
 void Motors::setSpeed(uint8_t motor, uint32_t speed){
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 	MotorParameterData_t *MotorParameterDataSingle;
@@ -265,6 +270,7 @@ void Motors::setSpeed(uint8_t motor, uint32_t speed){
 
 }
 
+//implementation of L6470 GoTo command
 void Motors::setPosition(uint8_t motor, int32_t position){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
@@ -287,6 +293,7 @@ void Motors::setPosition(uint8_t motor, int32_t position){
 	StepperMotorBoardHandle->Command->GoTo(board,device, _position);
 }
 
+//implementation of L6470 Move command
 void Motors::move(uint8_t motor, uint32_t steps){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
@@ -307,6 +314,8 @@ void Motors::move(uint8_t motor, uint32_t steps){
 
 }
 
+
+//Sending SET_SPEED cmd to driver, speed is calculated based on next pos and given time
 void Motors::setNextPosition(uint8_t motor, int32_t position, uint16_t time){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
@@ -339,6 +348,7 @@ void Motors::setNextPosition(uint8_t motor, int32_t position, uint16_t time){
 	StepperMotorBoardHandle->Command->Run(board,device,dir,speed);
 }
 
+//get Position from drivers' registers
 int32_t  Motors::getRegPosition(uint8_t motor){
 
 	MotorParameterData_t *MotorParameterDataSingle;
@@ -369,7 +379,8 @@ int32_t  Motors::getRegPosition(uint8_t motor){
 
 int16_t  Motors::getEncoderPosition(uint8_t motor){
 	int16_t pos;
-	encoder_read(&pos,motor);
+	int16_t data;
+	encoder_read(&pos, &data, motor);
 
 	return pos;
 }

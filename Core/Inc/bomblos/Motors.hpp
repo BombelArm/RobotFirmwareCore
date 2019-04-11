@@ -42,8 +42,8 @@
 //Constants for individual motors
 
 #define MOTOR_0_FDIR L6470_DIR_FWD_ID
-#define MOTOR_1_FDIR L6470_DIR_REV_ID
-#define MOTOR_2_FDIR L6470_DIR_FWD_ID
+#define MOTOR_1_FDIR L6470_DIR_FWD_ID
+#define MOTOR_2_FDIR L6470_DIR_REV_ID
 
 #define MOTOR_0_MIN_STEPS_PER_REVOLUTION 		200					//!< min number of steps per revolution for the motor
 #define MOTOR_1_MIN_STEPS_PER_REVOLUTION 		200 * 5.18

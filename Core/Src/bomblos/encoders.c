@@ -11,7 +11,7 @@
 #include <math.h>
 
 
-HAL_StatusTypeDef encoder_read(int16_t *data_in,int cs)
+HAL_StatusTypeDef encoder_read(int16_t *data_in,int16_t *data1, int cs)
 {
 	HAL_StatusTypeDef status;
 	GPIO_TypeDef*     port;
@@ -46,18 +46,22 @@ HAL_StatusTypeDef encoder_read(int16_t *data_in,int cs)
 
 	HAL_GPIO_WritePin(port, pin, GPIO_PIN_RESET);
 	status=HAL_SPI_Receive(&HSPI   , &data, 1, 0x00ff);
-	data=(uint16_t) data>>4;
+	data=(uint16_t) data>>3;
 	HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
 
-	data+=e_offests[cs];
-	data&=0x0FFF;
-
-	if(data <2048 && data>=0){
-			(*data_in)=data*e_dirs[cs];
-	}else{
-			(*data_in)=-fabs(data-4096)*e_dirs[cs];
+	if(cs == 2){
+		int i =0;
 	}
 
+	(*data1)=data;
+	data+=e_offests[cs];
+	data = data % 0x0FFF;
+
+	if(data >= 0x0800 ){
+		data=data-4096;
+	}
+
+	(*data_in)=data*e_dirs[cs];
 
 	return status;
 }

@@ -21,13 +21,13 @@ extern "C" {
 #define HSPI hspi2
 #define ENCODER_BITS 12
 
-#define ENCODER0_OFFSET -960 /**<  \brief Encoder 0 offset - base position calibration */
-#define ENCODER1_OFFSET -1345 /**<  \brief Encoder 1 offset - base position calibration */
-#define ENCODER2_OFFSET -381/**<  \brief Encoder 2 offset - base position calibration */
+#define ENCODER0_OFFSET -341 /**<  \brief Encoder 0 offset - base position calibration */
+#define ENCODER1_OFFSET -1288 /**<  \brief Encoder 1 offset - base position calibration */
+#define ENCODER2_OFFSET -847/**<  \brief Encoder 2 offset - base position calibration */
 
 #define ENCODER0_DIR	-1
-#define ENCODER1_DIR	-1
-#define ENCODER2_DIR	-1
+#define ENCODER1_DIR	1
+#define ENCODER2_DIR	1
 
 /*!
  * \details This function reads angle from the encoder
@@ -37,7 +37,7 @@ extern "C" {
  */
 
 
-HAL_StatusTypeDef encoder_read(int16_t *data_in, int cs);
+HAL_StatusTypeDef encoder_read(int16_t *data_in, int16_t *data1, int cs);
 
 #ifdef __cplusplus
 }

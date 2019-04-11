@@ -25,18 +25,15 @@ Controller::Controller():
 
 void Controller::publishState(){
 	int16_t encoder0, encoder1, encoder2;
+	int16_t data0, data1, data2;
 
-	encoder_read(&encoder0,0);
-	encoder_read(&encoder1,1);
-	encoder_read(&encoder2,2);
+	encoder_read(&encoder0, &data0, 0);
+	encoder_read(&encoder1, &data1, 1);
+	encoder_read(&encoder2, &data2, 2);
 
-	state_msg.encoder0_pos = encoder0;
-	state_msg.encoder1_pos = encoder1;
+	state_msg.encoder0_pos = 0;
+	state_msg.encoder1_pos = data2;
 	state_msg.encoder2_pos = encoder2;
-
-//	state_msg.encoder0_pos = motors.getRegPosition(0);
-//	state_msg.encoder1_pos = motors.getRegPosition(1);
-//	state_msg.encoder2_pos = motors.getRegPosition(2);
 
 	state_pub.publish(&state_msg);
 }
@@ -54,9 +51,13 @@ void Controller::pos_msg_callback(const bombel_msgs::BombelPos& pos_msg){
 //		lastPeriod = timeNow - previousTimestamp;
 //	}
 
-	motors.setNextPosition(0, motor0AbsReg,20);
-	motors.setNextPosition(1, motor1AbsReg,20);
-	motors.setNextPosition(2, motor2AbsReg,20);
+	motors.setNextPosition(0, motor0AbsReg, 20);
+	motors.setNextPosition(1, motor1AbsReg, 20);
+	motors.setNextPosition(2, motor2AbsReg, 20);
+
+//	motors.setPosition(0, motor0AbsReg);
+//	motors.setPosition(1, motor1AbsReg);
+//	motors.setPosition(2, motor2AbsReg);
 
 	previousTimestamp = timeNow;
 //	previousPositions[0]=motor0AbsReg;
@@ -74,8 +75,6 @@ void Controller::pos_msg_callback(const bombel_msgs::BombelPos& pos_msg){
 ros::NodeHandle& Controller::getNodeHandle(){
 	return nh;
 }
-
-
 
 void Controller::desync_callback(){
 //	HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_SET);
