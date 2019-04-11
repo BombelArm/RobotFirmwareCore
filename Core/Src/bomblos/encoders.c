@@ -11,7 +11,7 @@
 #include <math.h>
 
 
-HAL_StatusTypeDef encoder_read(int16_t *data_in,int16_t *data1, int cs)
+HAL_StatusTypeDef encoder_read(int16_t *data_in, int cs)
 {
 	HAL_StatusTypeDef status;
 	GPIO_TypeDef*     port;
@@ -49,11 +49,6 @@ HAL_StatusTypeDef encoder_read(int16_t *data_in,int16_t *data1, int cs)
 	data=(uint16_t) data>>3;
 	HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
 
-	if(cs == 2){
-		int i =0;
-	}
-
-	(*data1)=data;
 	data+=e_offests[cs];
 	data = data % 0x0FFF;
 

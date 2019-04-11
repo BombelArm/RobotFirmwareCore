@@ -37,7 +37,7 @@ extern "C" {
  */
 
 
-HAL_StatusTypeDef encoder_read(int16_t *data_in, int16_t *data1, int cs);
+HAL_StatusTypeDef encoder_read(int16_t *data_in, int cs);
 
 #ifdef __cplusplus
 }

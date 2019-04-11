@@ -25,14 +25,13 @@ Controller::Controller():
 
 void Controller::publishState(){
 	int16_t encoder0, encoder1, encoder2;
-	int16_t data0, data1, data2;
 
-	encoder_read(&encoder0, &data0, 0);
-	encoder_read(&encoder1, &data1, 1);
-	encoder_read(&encoder2, &data2, 2);
+	encoder_read(&encoder0, 0);
+	encoder_read(&encoder1, 1);
+	encoder_read(&encoder2, 2);
 
-	state_msg.encoder0_pos = 0;
-	state_msg.encoder1_pos = data2;
+	state_msg.encoder0_pos = encoder0;
+	state_msg.encoder1_pos = encoder1;
 	state_msg.encoder2_pos = encoder2;
 
 	state_pub.publish(&state_msg);

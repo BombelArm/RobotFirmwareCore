@@ -379,8 +379,8 @@ int32_t  Motors::getRegPosition(uint8_t motor){
 
 int16_t  Motors::getEncoderPosition(uint8_t motor){
 	int16_t pos;
-	int16_t data;
-	encoder_read(&pos, &data, motor);
+
+	encoder_read(&pos,  motor);
 
 	return pos;
 }
