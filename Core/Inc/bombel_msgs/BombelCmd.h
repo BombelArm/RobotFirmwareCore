@@ -1,5 +1,5 @@
-#ifndef _ROS_bombel_msgs_BombelPos_h
-#define _ROS_bombel_msgs_BombelPos_h
+#ifndef _ROS_bombel_msgs_BombelCmd_h
+#define _ROS_bombel_msgs_BombelCmd_h
 
 #include <stdint.h>
 #include <string.h>
@@ -9,11 +9,13 @@
 namespace bombel_msgs
 {
 
-  class BombelPos : public ros::Msg
+  class BombelCmd : public ros::Msg
   {
     public:
-      typedef int16_t _seq_type;
+      typedef uint16_t _seq_type;
       _seq_type seq;
+      typedef uint16_t _cmd_type;
+      _cmd_type cmd;
       typedef float _joint0_pos_type;
       _joint0_pos_type joint0_pos;
       typedef float _joint1_pos_type;
@@ -21,8 +23,9 @@ namespace bombel_msgs
       typedef float _joint2_pos_type;
       _joint2_pos_type joint2_pos;
 
-    BombelPos():
+    BombelCmd():
       seq(0),
+      cmd(0),
       joint0_pos(0),
       joint1_pos(0),
       joint2_pos(0)
@@ -32,14 +35,12 @@ namespace bombel_msgs
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      union {
-        int16_t real;
-        uint16_t base;
-      } u_seq;
-      u_seq.real = this->seq;
-      *(outbuffer + offset + 0) = (u_seq.base >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (u_seq.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 0) = (this->seq >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (this->seq >> (8 * 1)) & 0xFF;
       offset += sizeof(this->seq);
+      *(outbuffer + offset + 0) = (this->cmd >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (this->cmd >> (8 * 1)) & 0xFF;
+      offset += sizeof(this->cmd);
       union {
         float real;
         uint32_t base;
@@ -76,15 +77,12 @@ namespace bombel_msgs
     virtual int deserialize(unsigned char *inbuffer)
     {
       int offset = 0;
-      union {
-        int16_t real;
-        uint16_t base;
-      } u_seq;
-      u_seq.base = 0;
-      u_seq.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_seq.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      this->seq = u_seq.real;
+      this->seq =  ((uint16_t) (*(inbuffer + offset)));
+      this->seq |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       offset += sizeof(this->seq);
+      this->cmd =  ((uint16_t) (*(inbuffer + offset)));
+      this->cmd |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      offset += sizeof(this->cmd);
       union {
         float real;
         uint32_t base;
@@ -121,8 +119,8 @@ namespace bombel_msgs
      return offset;
     }
 
-    const char * getType(){ return "bombel_msgs/BombelPos"; };
-    const char * getMD5(){ return "9ef486ae0fd99e4ec0734e613cb7b489"; };
+    const char * getType(){ return "bombel_msgs/BombelCmd"; };
+    const char * getMD5(){ return "1b1e87ad64a59979edd73f1306ebac50"; };
 
   };
 

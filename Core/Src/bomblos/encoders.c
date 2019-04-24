@@ -49,6 +49,8 @@ HAL_StatusTypeDef encoder_read(int16_t *data_in, int cs)
 	data=(uint16_t) data>>3;
 	HAL_GPIO_WritePin(port, pin, GPIO_PIN_SET);
 
+	//	(*data_in)=data; //uncomment for measuring offset
+
 	data+=e_offests[cs];
 	data = data % 0x0FFF;
 
@@ -56,7 +58,7 @@ HAL_StatusTypeDef encoder_read(int16_t *data_in, int cs)
 		data=data-4096;
 	}
 
-	(*data_in)=data*e_dirs[cs];
+	(*data_in)=data*e_dirs[cs]; //comment for measuring offset
 
 	return status;
 }

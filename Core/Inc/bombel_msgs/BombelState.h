@@ -18,6 +18,12 @@ namespace bombel_msgs
       _encoder1_pos_type encoder1_pos;
       typedef int16_t _encoder2_pos_type;
       _encoder2_pos_type encoder2_pos;
+      typedef int32_t _reg0_pos_type;
+      _reg0_pos_type reg0_pos;
+      typedef int32_t _reg1_pos_type;
+      _reg1_pos_type reg1_pos;
+      typedef int32_t _reg2_pos_type;
+      _reg2_pos_type reg2_pos;
       typedef int16_t _last_order_received_type;
       _last_order_received_type last_order_received;
       typedef uint16_t _order_errors_type;
@@ -29,6 +35,9 @@ namespace bombel_msgs
       encoder0_pos(0),
       encoder1_pos(0),
       encoder2_pos(0),
+      reg0_pos(0),
+      reg1_pos(0),
+      reg2_pos(0),
       last_order_received(0),
       order_errors(0),
       driver_errors(0)
@@ -62,6 +71,36 @@ namespace bombel_msgs
       *(outbuffer + offset + 0) = (u_encoder2_pos.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_encoder2_pos.base >> (8 * 1)) & 0xFF;
       offset += sizeof(this->encoder2_pos);
+      union {
+        int32_t real;
+        uint32_t base;
+      } u_reg0_pos;
+      u_reg0_pos.real = this->reg0_pos;
+      *(outbuffer + offset + 0) = (u_reg0_pos.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_reg0_pos.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_reg0_pos.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_reg0_pos.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->reg0_pos);
+      union {
+        int32_t real;
+        uint32_t base;
+      } u_reg1_pos;
+      u_reg1_pos.real = this->reg1_pos;
+      *(outbuffer + offset + 0) = (u_reg1_pos.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_reg1_pos.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_reg1_pos.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_reg1_pos.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->reg1_pos);
+      union {
+        int32_t real;
+        uint32_t base;
+      } u_reg2_pos;
+      u_reg2_pos.real = this->reg2_pos;
+      *(outbuffer + offset + 0) = (u_reg2_pos.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_reg2_pos.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_reg2_pos.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_reg2_pos.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->reg2_pos);
       union {
         int16_t real;
         uint16_t base;
@@ -110,6 +149,39 @@ namespace bombel_msgs
       this->encoder2_pos = u_encoder2_pos.real;
       offset += sizeof(this->encoder2_pos);
       union {
+        int32_t real;
+        uint32_t base;
+      } u_reg0_pos;
+      u_reg0_pos.base = 0;
+      u_reg0_pos.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_reg0_pos.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_reg0_pos.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_reg0_pos.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->reg0_pos = u_reg0_pos.real;
+      offset += sizeof(this->reg0_pos);
+      union {
+        int32_t real;
+        uint32_t base;
+      } u_reg1_pos;
+      u_reg1_pos.base = 0;
+      u_reg1_pos.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_reg1_pos.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_reg1_pos.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_reg1_pos.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->reg1_pos = u_reg1_pos.real;
+      offset += sizeof(this->reg1_pos);
+      union {
+        int32_t real;
+        uint32_t base;
+      } u_reg2_pos;
+      u_reg2_pos.base = 0;
+      u_reg2_pos.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_reg2_pos.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_reg2_pos.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_reg2_pos.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->reg2_pos = u_reg2_pos.real;
+      offset += sizeof(this->reg2_pos);
+      union {
         int16_t real;
         uint16_t base;
       } u_last_order_received;
@@ -128,7 +200,7 @@ namespace bombel_msgs
     }
 
     const char * getType(){ return "bombel_msgs/BombelState"; };
-    const char * getMD5(){ return "fe10011d68333d88599d0622c2d6631c"; };
+    const char * getMD5(){ return "7b3c30a29e506f2f4452c4a9cecdc143"; };
 
   };
 

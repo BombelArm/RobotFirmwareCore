@@ -21,8 +21,8 @@ extern "C" {
 #define HSPI hspi2
 #define ENCODER_BITS 12
 
-#define ENCODER0_OFFSET -341 /**<  \brief Encoder 0 offset - base position calibration */
-#define ENCODER1_OFFSET -1288 /**<  \brief Encoder 1 offset - base position calibration */
+#define ENCODER0_OFFSET -603 /**<  \brief Encoder 0 offset - base position calibration */
+#define ENCODER1_OFFSET -2653 /**<  \brief Encoder 1 offset - base position calibration */
 #define ENCODER2_OFFSET -847/**<  \brief Encoder 2 offset - base position calibration */
 
 #define ENCODER0_DIR	-1

@@ -208,8 +208,14 @@ int32_t Motors::absPosReg2Encoder(uint8_t motor, int32_t absPos){
 	return encoderPos;
 }
 
-int32_t Motors::encoder2AbsPosReg(uint8_t motor, int32_t absPos){
-	return 1;
+int32_t Motors::encoder2AbsPosReg(uint8_t motor, int32_t encoder){
+	int32_t absReg;
+	uint16_t microStepMultiplier = motorMicroStepMultiplier[motor];
+	float fullStepPerRev = motorStepsPerJointRev[motor];
+
+	absReg = encoder * microStepMultiplier * fullStepPerRev / pow(2,ENCODER_BITS);
+
+	return absReg;
 }
 
 //convert radians to L6470 abs position register
@@ -316,7 +322,7 @@ void Motors::move(uint8_t motor, uint32_t steps){
 
 
 //Sending SET_SPEED cmd to driver, speed is calculated based on next pos and given time
-void Motors::setNextPosition(uint8_t motor, int32_t position, uint16_t time){
+void Motors::setNextPosition(uint8_t motor, int32_t actualPosition, int32_t position, uint16_t time){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 	uint8_t board, device;
@@ -334,7 +340,7 @@ void Motors::setNextPosition(uint8_t motor, int32_t position, uint16_t time){
 
 	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
 
-	int32_t distance = position - getRegPosition(motor);
+	int32_t distance = position - actualPosition;
 	if(distance< 0){
 		distance= -distance;
 		//changing direction
@@ -377,6 +383,32 @@ int32_t  Motors::getRegPosition(uint8_t motor){
 
 }
 
+void Motors::setRegPosition(uint8_t motor, int32_t pos){
+
+	MotorParameterData_t *MotorParameterDataSingle;
+	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
+	uint8_t board, device;
+	uint32_t _speed;
+
+
+	if(motor == 0 || motor == 1){
+		board = EXPBRD_ID(0);
+		device = L6470_ID(motor);
+	}else if(motor == 2 || motor == 3){
+		board = EXPBRD_ID(1);
+		device = L6470_ID(motor - 2);
+	}
+
+    StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
+
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+
+	uint32_t abs_pos = Position_2_AbsPos(pos);
+	if(motorNativeDirections[motor] == L6470_DIR_REV_ID) abs_pos = -abs_pos;
+	StepperMotorBoardHandle->Command->SetParam(board,device,L6470_ABS_POS_ID,abs_pos);
+
+}
+
 int16_t  Motors::getEncoderPosition(uint8_t motor){
 	int16_t pos;
 
@@ -412,7 +444,7 @@ void Motors::softStop(uint8_t motor){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 	uint8_t board, device;
-	uint32_t _speed;
+
 
 	if(motor == 0 || motor == 1){
 		board = EXPBRD_ID(0);
@@ -421,12 +453,11 @@ void Motors::softStop(uint8_t motor){
 		board = EXPBRD_ID(1);
 		device = L6470_ID(motor - 2);
 	}
-    StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
 
+
+	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
 	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
-
-	StepperMotorBoardHandle->StepperMotorDriverHandle[device]->Command->PrepareSoftHiZ(device);
-	StepperMotorBoardHandle->Command->PerformPreparedApplicationCommand();
+	StepperMotorBoardHandle->Command->SoftHiZ(board,device);
 
 }
 

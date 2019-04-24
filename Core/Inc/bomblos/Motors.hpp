@@ -18,8 +18,8 @@
 
 //Constants for all motors
 #define MOTOR_SUPPLY_VOLTAGE 			12.0				//!< motor supply voltage in V
-#define MAX_MOTOR_PHASE_VOLTAGE_AMPR 	3.0					//!< max motor phase voltage in A
-#define MAX_MOTOR_PHASE_VOLTAGE_VOLT 	12.00				//!< max motor phase voltage in V
+#define MAX_MOTOR_PHASE_VOLTAGE_AMPR 	5.0					//!< max motor phase voltage in A
+#define MAX_MOTOR_PHASE_VOLTAGE_VOLT 	24.00				//!< max motor phase voltage in V
 #define MOTOR_MIN_SPEED 				0.0					//!< motor minimum speed [step/s]
 #define MOTOR_SPEED_THRESHOLD 			602.7				//!< motor full-step speed threshold [step/s]
 #define MOTOR_HOLDING_KVAL 				4.06				//!< holding kval [V]
@@ -53,21 +53,21 @@
 #define JOINT_1_SHIFT 3.3333
 #define JOINT_2_SHIFT 3.8
 
-#define MOTOR_0_INIT_SPEED	300.0				//!< motor initial speed [step/s]
-#define MOTOR_1_INIT_SPEED	300.0
-#define MOTOR_2_INIT_SPEED	300.0
+#define MOTOR_0_INIT_SPEED	100.0				//!< motor initial speed [step/s]
+#define MOTOR_1_INIT_SPEED	100.0
+#define MOTOR_2_INIT_SPEED	100.0
 
 #define MOTOR_0_ACC			200.0//!< motor acceleration [step/s^2] (comment for infinite acceleration mode)
-#define MOTOR_1_ACC			1000.0
-#define MOTOR_2_ACC			200.0
+#define MOTOR_1_ACC			100.0
+#define MOTOR_2_ACC			100.0
 
 #define MOTOR_0_DECC		200.0 //!< motor deceleration [step/s^2] (comment for infinite deceleration mode)
-#define MOTOR_1_DECC		1000.0
-#define MOTOR_2_DECC		200.0
+#define MOTOR_1_DECC		100.0
+#define MOTOR_2_DECC		100.0
 
-#define MOTOR_0_MAX_SPEED	2000.0 //!< motor maximum speed [step/s]
-#define MOTOR_1_MAX_SPEED	2000.0
-#define MOTOR_2_MAX_SPEED	2000.0
+#define MOTOR_0_MAX_SPEED	1500.0 //!< motor maximum speed [step/s]
+#define MOTOR_1_MAX_SPEED	1500.0
+#define MOTOR_2_MAX_SPEED	1500.0
 
 
 namespace bomblos{
@@ -88,10 +88,13 @@ public:
 
 	void setSpeed(uint8_t motor, uint32_t speed);
 	void setPosition(uint8_t motor, int32_t position);
-	void setNextPosition(uint8_t motor, int32_t position, uint16_t time);
+	void setNextPosition(uint8_t motor, int32_t actualPosition, int32_t position, uint16_t time);
 	void move(uint8_t motor, uint32_t steps);
 	void softStop(uint8_t motor);
 	void hardStop(uint8_t motor);
+
+
+	void  setRegPosition(uint8_t motor, int32_t pos);
 
 	int32_t  getRegPosition(uint8_t motor);
 	int16_t  getEncoderPosition(uint8_t motor);
