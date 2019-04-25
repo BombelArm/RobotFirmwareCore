@@ -440,7 +440,7 @@ sL6470_StatusRegister_t Motors::getStatus(uint8_t motor){
 
 }
 
-void Motors::softStop(uint8_t motor){
+void Motors::softHiZ(uint8_t motor){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 	uint8_t board, device;
@@ -461,11 +461,11 @@ void Motors::softStop(uint8_t motor){
 
 }
 
-void Motors::hardStop(uint8_t motor){
+void Motors::softStop(uint8_t motor){
 	MotorParameterData_t *MotorParameterDataSingle;
 	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
 	uint8_t board, device;
-	uint32_t _speed;
+
 
 	if(motor == 0 || motor == 1){
 		board = EXPBRD_ID(0);
@@ -474,13 +474,53 @@ void Motors::hardStop(uint8_t motor){
 		board = EXPBRD_ID(1);
 		device = L6470_ID(motor - 2);
 	}
-    StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
 
+
+	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
 	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	StepperMotorBoardHandle->Command->SoftStop(board,device);
+}
 
-	StepperMotorBoardHandle->StepperMotorDriverHandle[device]->Command->PrepareHardHiZ(device);
-	StepperMotorBoardHandle->Command->PerformPreparedApplicationCommand();
 
+void Motors::hardHiZ(uint8_t motor){
+	MotorParameterData_t *MotorParameterDataSingle;
+	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
+	uint8_t board, device;
+
+
+	if(motor == 0 || motor == 1){
+		board = EXPBRD_ID(0);
+		device = L6470_ID(motor);
+	}else if(motor == 2 || motor == 3){
+		board = EXPBRD_ID(1);
+		device = L6470_ID(motor - 2);
+	}
+
+
+	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	StepperMotorBoardHandle->Command->HardHiZ(board,device);
+
+}
+
+void Motors::hardStop(uint8_t motor){
+	MotorParameterData_t *MotorParameterDataSingle;
+	StepperMotorBoardHandle_t *StepperMotorBoardHandle;
+	uint8_t board, device;
+
+
+	if(motor == 0 || motor == 1){
+		board = EXPBRD_ID(0);
+		device = L6470_ID(motor);
+	}else if(motor == 2 || motor == 3){
+		board = EXPBRD_ID(1);
+		device = L6470_ID(motor - 2);
+	}
+
+
+	StepperMotorBoardHandle = BSP_GetExpansionBoardHandle(board);
+	MotorParameterDataSingle = (MotorParameterData_t*)MotorParameterInitData+((board*L6470DAISYCHAINSIZE)+device);
+	StepperMotorBoardHandle->Command->HardStop(board,device);
 }
 
 }

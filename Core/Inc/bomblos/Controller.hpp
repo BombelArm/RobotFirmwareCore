@@ -21,7 +21,7 @@
 #define POS_SUB_NAME "bombel/cmd"
 #define STATE_PUB_NAME "bombel/state"
 #define MSG_FREQ 20 //20Hz
-
+#define MAX_DRIVER_ENCODER_DIFF_RAD 0.07 //max difference between drivers' registers and encoders' readings
 
 extern TIM_HandleTypeDef htim2;
 
@@ -72,6 +72,7 @@ class Controller
 		int32_t actualEncoders[JOINTS_N];
 
 		int16_t isStopped;
+		const int16_t maxDriverEncoderDiff; //in bits
 };
 
 }

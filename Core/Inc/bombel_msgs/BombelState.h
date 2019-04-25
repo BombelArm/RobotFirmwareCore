@@ -24,12 +24,10 @@ namespace bombel_msgs
       _reg1_pos_type reg1_pos;
       typedef int32_t _reg2_pos_type;
       _reg2_pos_type reg2_pos;
-      typedef int16_t _last_order_received_type;
-      _last_order_received_type last_order_received;
-      typedef uint16_t _order_errors_type;
-      _order_errors_type order_errors;
-      typedef uint16_t _driver_errors_type;
-      _driver_errors_type driver_errors;
+      typedef uint16_t _driverPositionError_type;
+      _driverPositionError_type driverPositionError;
+      typedef bool _isStopped_type;
+      _isStopped_type isStopped;
 
     BombelState():
       encoder0_pos(0),
@@ -38,9 +36,8 @@ namespace bombel_msgs
       reg0_pos(0),
       reg1_pos(0),
       reg2_pos(0),
-      last_order_received(0),
-      order_errors(0),
-      driver_errors(0)
+      driverPositionError(0),
+      isStopped(0)
     {
     }
 
@@ -101,20 +98,16 @@ namespace bombel_msgs
       *(outbuffer + offset + 2) = (u_reg2_pos.base >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (u_reg2_pos.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->reg2_pos);
+      *(outbuffer + offset + 0) = (this->driverPositionError >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (this->driverPositionError >> (8 * 1)) & 0xFF;
+      offset += sizeof(this->driverPositionError);
       union {
-        int16_t real;
-        uint16_t base;
-      } u_last_order_received;
-      u_last_order_received.real = this->last_order_received;
-      *(outbuffer + offset + 0) = (u_last_order_received.base >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (u_last_order_received.base >> (8 * 1)) & 0xFF;
-      offset += sizeof(this->last_order_received);
-      *(outbuffer + offset + 0) = (this->order_errors >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (this->order_errors >> (8 * 1)) & 0xFF;
-      offset += sizeof(this->order_errors);
-      *(outbuffer + offset + 0) = (this->driver_errors >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (this->driver_errors >> (8 * 1)) & 0xFF;
-      offset += sizeof(this->driver_errors);
+        bool real;
+        uint8_t base;
+      } u_isStopped;
+      u_isStopped.real = this->isStopped;
+      *(outbuffer + offset + 0) = (u_isStopped.base >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->isStopped);
       return offset;
     }
 
@@ -181,26 +174,22 @@ namespace bombel_msgs
       u_reg2_pos.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->reg2_pos = u_reg2_pos.real;
       offset += sizeof(this->reg2_pos);
+      this->driverPositionError =  ((uint16_t) (*(inbuffer + offset)));
+      this->driverPositionError |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      offset += sizeof(this->driverPositionError);
       union {
-        int16_t real;
-        uint16_t base;
-      } u_last_order_received;
-      u_last_order_received.base = 0;
-      u_last_order_received.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_last_order_received.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      this->last_order_received = u_last_order_received.real;
-      offset += sizeof(this->last_order_received);
-      this->order_errors =  ((uint16_t) (*(inbuffer + offset)));
-      this->order_errors |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      offset += sizeof(this->order_errors);
-      this->driver_errors =  ((uint16_t) (*(inbuffer + offset)));
-      this->driver_errors |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      offset += sizeof(this->driver_errors);
+        bool real;
+        uint8_t base;
+      } u_isStopped;
+      u_isStopped.base = 0;
+      u_isStopped.base |= ((uint8_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      this->isStopped = u_isStopped.real;
+      offset += sizeof(this->isStopped);
      return offset;
     }
 
     const char * getType(){ return "bombel_msgs/BombelState"; };
-    const char * getMD5(){ return "7b3c30a29e506f2f4452c4a9cecdc143"; };
+    const char * getMD5(){ return "07fd29de5997ed81c83e7bd1d7e1df33"; };
 
   };
 

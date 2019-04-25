@@ -53,19 +53,19 @@
 #define JOINT_1_SHIFT 3.3333
 #define JOINT_2_SHIFT 3.8
 
-#define MOTOR_0_INIT_SPEED	100.0				//!< motor initial speed [step/s]
-#define MOTOR_1_INIT_SPEED	100.0
-#define MOTOR_2_INIT_SPEED	100.0
+#define MOTOR_0_INIT_SPEED	50.0				//!< motor initial speed [step/s]
+#define MOTOR_1_INIT_SPEED	50.0
+#define MOTOR_2_INIT_SPEED	50.0
 
-#define MOTOR_0_ACC			200.0//!< motor acceleration [step/s^2] (comment for infinite acceleration mode)
-#define MOTOR_1_ACC			100.0
-#define MOTOR_2_ACC			100.0
+#define MOTOR_0_ACC			160.0//!< motor acceleration [step/s^2] (comment for infinite acceleration mode)
+#define MOTOR_1_ACC			80.0
+#define MOTOR_2_ACC			80.0
 
-#define MOTOR_0_DECC		200.0 //!< motor deceleration [step/s^2] (comment for infinite deceleration mode)
-#define MOTOR_1_DECC		100.0
-#define MOTOR_2_DECC		100.0
+#define MOTOR_0_DECC		MOTOR_0_ACC //!< motor deceleration [step/s^2] (comment for infinite deceleration mode)
+#define MOTOR_1_DECC		MOTOR_1_ACC
+#define MOTOR_2_DECC		MOTOR_2_ACC
 
-#define MOTOR_0_MAX_SPEED	1500.0 //!< motor maximum speed [step/s]
+#define MOTOR_0_MAX_SPEED	3000.0 //!< motor maximum speed [step/s]
 #define MOTOR_1_MAX_SPEED	1500.0
 #define MOTOR_2_MAX_SPEED	1500.0
 
@@ -90,7 +90,9 @@ public:
 	void setPosition(uint8_t motor, int32_t position);
 	void setNextPosition(uint8_t motor, int32_t actualPosition, int32_t position, uint16_t time);
 	void move(uint8_t motor, uint32_t steps);
+	void softHiZ(uint8_t motor);
 	void softStop(uint8_t motor);
+	void hardHiZ(uint8_t motor);
 	void hardStop(uint8_t motor);
 
 
