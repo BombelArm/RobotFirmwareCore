@@ -11,7 +11,8 @@ Controller::Controller():
 	motors(),
 	validator(0,0,0,0,0,0),
 	previousPositions{0,0,0},
-	isStopped(1),
+	isStopped(true),
+	isStopWhenError(true),
 	maxDriverEncoderDiff(MAX_DRIVER_ENCODER_DIFF_RAD * pow(2,ENCODER_BITS) / 6.28)
 {
 	nh.initNode();
@@ -31,18 +32,18 @@ void Controller::publishState(){
 	int16_t encoder0, encoder1, encoder2;
 
 	uint16_t driver_errors = 0;
-
+//
 	encoder_read(&encoder0, 0);
+	actualAbsReg[0] = motors.getRegPosition(0);
 	encoder_read(&encoder1, 1);
+	actualAbsReg[1] = motors.getRegPosition(1);
 	encoder_read(&encoder2, 2);
+	actualAbsReg[2] = motors.getRegPosition(2);
 
 	actualEncoders[0] = encoder0;
 	actualEncoders[1] = encoder1;
 	actualEncoders[2] = encoder2;
 
-	actualAbsReg[0] = motors.getRegPosition(0);
-	actualAbsReg[1] = motors.getRegPosition(1);
-	actualAbsReg[2] = motors.getRegPosition(2);
 
 	state_msg.encoder0_pos = encoder0;
 	state_msg.encoder1_pos = encoder1;
@@ -51,7 +52,7 @@ void Controller::publishState(){
 	state_msg.reg0_pos = actualAbsReg[0];
 	state_msg.reg1_pos = actualAbsReg[1];
 	state_msg.reg2_pos = actualAbsReg[2];
-
+//
     if(abs(motors.absPosReg2Encoder(0, actualAbsReg[0]) - encoder0) > maxDriverEncoderDiff){
     	driver_errors |= 1 << 0;
     }
@@ -62,11 +63,11 @@ void Controller::publishState(){
     	driver_errors |= 1 << 2;
     }
 
-    if(driver_errors > 0 && isStopped != 1){
+    if(isStopWhenError && driver_errors > 0 && isStopped != 1){
     	isStopped = 1;
-    	motors.hardStop(0);
-    	motors.hardStop(1);
-    	motors.hardStop(2);
+    	motors.softStop(0);
+    	motors.softStop(1);
+    	motors.softStop(2);
     }
 
     state_msg.driverPositionError = driver_errors;
@@ -91,9 +92,9 @@ void Controller::cmd_msg_callback(const bombel_msgs::BombelCmd& cmd_msg){
 	int32_t nextAbsReg1= motors.rad2AbsPosReg(1,cmd_msg.joint1_pos);
 	int32_t nextAbsReg2 = motors.rad2AbsPosReg(2,cmd_msg.joint2_pos);
 
-	actualAbsReg[0] = motors.getRegPosition(0);
-	actualAbsReg[1] = motors.getRegPosition(1);
-	actualAbsReg[2] = motors.getRegPosition(2);
+	int32_t actualAbsReg0 = motors.getRegPosition(0);
+	int32_t actualAbsReg1 = motors.getRegPosition(1);
+	int32_t actualAbsReg2 = motors.getRegPosition(2);
 
 	BombelCmdType cmdType = static_cast<BombelCmdType>(cmd_msg.cmd);
 
@@ -123,9 +124,9 @@ void Controller::cmd_msg_callback(const bombel_msgs::BombelCmd& cmd_msg){
 		return;
 
 	}else if(cmdType == SetNextPosition){
-		motors.setNextPosition(0, actualAbsReg[0], nextAbsReg0, MSG_FREQ);
-		motors.setNextPosition(1, actualAbsReg[1], nextAbsReg1, MSG_FREQ);
-		motors.setNextPosition(2, actualAbsReg[2], nextAbsReg2, MSG_FREQ);
+		motors.setNextPosition(0, actualAbsReg0, nextAbsReg0, MSG_FREQ);
+		motors.setNextPosition(1, actualAbsReg1, nextAbsReg1, MSG_FREQ);
+		motors.setNextPosition(2, actualAbsReg2, nextAbsReg2, MSG_FREQ);
 
 		return;
 
@@ -140,7 +141,14 @@ void Controller::cmd_msg_callback(const bombel_msgs::BombelCmd& cmd_msg){
 		motors.setPosition(2, nextAbsReg2);
 
 		return;
+	}else if(cmdType == DoNotStopWhenError){
+		isStopWhenError = false;
 
+		return;
+	}else if(cmdType == StopWhenError){
+		isStopWhenError = true;
+
+		return;
 	}
 }
 

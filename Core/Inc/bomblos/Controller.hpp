@@ -21,7 +21,7 @@
 #define POS_SUB_NAME "bombel/cmd"
 #define STATE_PUB_NAME "bombel/state"
 #define MSG_FREQ 20 //20Hz
-#define MAX_DRIVER_ENCODER_DIFF_RAD 0.07 //max difference between drivers' registers and encoders' readings
+#define MAX_DRIVER_ENCODER_DIFF_RAD 0.1 //max difference between drivers' registers and encoders' readings
 
 extern TIM_HandleTypeDef htim2;
 
@@ -33,7 +33,10 @@ enum BombelCmdType{
 	Start,
 	SetNextPosition,
 	WriteEncodersToDriver,
-	SetPosition
+	SetPosition,
+	StopWhenError,
+	DoNotStopWhenError
+
 };
 
 class Controller
@@ -71,7 +74,8 @@ class Controller
 		int32_t actualAbsReg[JOINTS_N];
 		int32_t actualEncoders[JOINTS_N];
 
-		int16_t isStopped;
+		bool isStopped;
+		bool isStopWhenError;
 		const int16_t maxDriverEncoderDiff; //in bits
 };
 
